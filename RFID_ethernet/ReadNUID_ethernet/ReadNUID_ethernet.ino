@@ -41,6 +41,11 @@ MFRC522::MIFARE_Key key;
 // Init array that will store new NUID 
 byte nuidPICC[4];
 
+int blue = 5;
+int red = 6;
+int green = 7;
+int beeper = 8;
+
 void setup() { 
   Serial.begin(9600);
   SPI.begin(); // Init SPI bus
@@ -54,12 +59,16 @@ void setup() {
   Serial.print(F("Using the following key:"));
   printHex(key.keyByte, MFRC522::MF_KEY_SIZE);
 
-  pinMode(8, OUTPUT);
-  pinMode(7, OUTPUT);
-  pinMode(6, OUTPUT);
+  pinMode(beeper, OUTPUT);
+  pinMode(green, OUTPUT);
+  pinMode(red, OUTPUT);
+  pinMode(blue, OUTPUT);
 }
  
 void loop() {
+  digitalWrite(blue, HIGH);
+  delay(1000);
+  digitalWrite(blue, LOW);
 
   // Look for new cards
   if ( ! rfid.PICC_IsNewCardPresent())
@@ -100,19 +109,19 @@ void loop() {
     printDec(rfid.uid.uidByte, rfid.uid.size);
     Serial.println();
 
-    digitalWrite(7, HIGH);
-    tone(8, 1000); // make piezo buzz
+    digitalWrite(green, HIGH);
+    tone(beeper, 1000); // make piezo buzz
     delay(500); // wait 1s
-    noTone(8); // stop sound
+    noTone(beeper); // stop sound
     delay(500);
-    digitalWrite(7, LOW);
+    digitalWrite(green, LOW);
   }
   else 
   {
     Serial.println(F("Card read previously."));
-    digitalWrite(6, HIGH);
+    digitalWrite(red, HIGH);
     delay(1000);
-    digitalWrite(6, LOW);
+    digitalWrite(red, LOW);
   }
 
   // Halt PICC
